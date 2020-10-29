@@ -80,24 +80,49 @@
         $this->conservation_id = $args['conservation_id'] ?? '';
 
     }
-
+   
+//    public function create() {
+//        $sql = "INSERT INTO birds (common_name, habitat, food, conservation_id, backyard_tips)";
+//        $sql .= " VALUES (";
+//        $sql .= "'" . $this->common_name . "', ";
+//        $sql .= "'" . $this->habitat . "', ";
+//        $sql .= "'" . $this->food . "', ";
+//        $sql .= "'" . $this->conservation_id . "', ";
+//        $sql .= "'" . $this->backyard_tips . "'";
+//        $sql .= ")";
+//
+//        $result = self::$database->exec($sql);
+//
+//        if( $result ) {
+//            $this->id = self::$database->lastInsertID();
+//        } else  echo "Insert query did not run";
+//        
+//        return $result;
+//        
+//    }   
+   
     public function create() {
-      $sql = "INSERT INTO birds (common_name, habitat, food, conservation_id, backyard_tips)";
-      $sql .= " VALUES (";
-      $sql .= "'" . $this->common_name . "', ";
-      $sql .= "'" . $this->habitat . "', ";
-      $sql .= "'" . $this->food . "', ";
-      $sql .= "'" . $this->conservation_id . "', ";
-      $sql .= "'" . $this->backyard_tips . "'";
-      $sql .= ")";
-      
-      $result = self::$database->exec($sql);
-      
-      if($result) {
-        $this->id = self::$database->lastInsertID();
-      } else echo "Insert query did not run";
-      
-      return $result;
+        $sql = "INSERT INTO birds (common_name, habitat, food, conservation_id, backyard_tips)";
+        $sql .= " VALUES (";
+        $sql .= ':common_name, :habitat, :food, :conservation_id, :backyard_tips';
+        $sql .= ");";
+
+        $stmt = self::$database->prepare($sql);
+        
+        $stmt->bindValue(':common_name', $this->common_name );
+        $stmt->bindValue(':habitat', $this->habitat );
+        $stmt->bindValue(':food', $this->food );
+        $stmt->bindValue(':conservation_id', $this->conservation_id );
+        $stmt->bindValue('backyard_tips', $this->backyard_tips );
+        
+        $result = $stmt->execute();
+
+        if( $result ) {
+            $this->id = self::$database->lastInsertID();
+        } else  echo "Insert query did not run";
+        
+        return $result;
+        
     }
    
     public function conservation() {
